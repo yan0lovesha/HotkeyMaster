@@ -44,15 +44,22 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
       
     - name: Get version
-      run: echo "VERSION=0.0.0.${{ github.run_number }}" >> "$GITHUB_ENV"
+      run: |
+        echo "get with env."
+        echo "${{ env.VERSION }}"
+        echo "get without env."
+        run: echo $VERSION
+        echo "set"
+        echo "VERSION=0.0.0.34" >> $GITHUB_ENV
+        echo "get with env."
+        echo "${{ env.VERSION }}"
+        echo "get without env."
+        run: echo $VERSION
       
-    - name: Test VERSION
-      run: echo "${{ env.VERSION }}"
-      
-    - name: Create release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ env.VERSION }}
-        release_name: Release ${{ env.VERSION }}
+#    - name: Create release
+#      uses: actions/create-release@v1
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        tag_name: ${{ env.VERSION }}
+#        release_name: Release ${{ env.VERSION }}
