@@ -46,6 +46,9 @@ jobs:
     - name: Get version
       run: echo "VERSION=0.0.1.${{ github.run_number }}" >> $GITHUB_ENV
       
+    - name: Test VERSION
+      run: echo "${{ env.VERSION }}"
+      
     - name: Create release
       uses: actions/create-release@v1
       env:
