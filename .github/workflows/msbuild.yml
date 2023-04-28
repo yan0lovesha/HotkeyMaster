@@ -45,12 +45,10 @@ jobs:
       
     - name: Get version
       run: |
-        echo "get with env."
-        echo "${{ env.NEW_VERSION }}"
-        echo "get without env."
-        echo $NEW_VERSION
-        echo "set"
         echo "NEW_VERSION=0.0.0.34" >> $GITHUB_ENV
+    
+    - name: Get version
+      run: |
         echo "get with env."
         echo "${{ env.NEW_VERSION }}"
         echo "get without env."
