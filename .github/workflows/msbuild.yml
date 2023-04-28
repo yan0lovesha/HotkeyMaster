@@ -48,13 +48,13 @@ jobs:
         echo "get with env."
         echo "${{ env.VERSION }}"
         echo "get without env."
-        run: echo $VERSION
+        echo $VERSION
         echo "set"
         echo "VERSION=0.0.0.34" >> $GITHUB_ENV
         echo "get with env."
         echo "${{ env.VERSION }}"
         echo "get without env."
-        run: echo $VERSION
+        echo $VERSION
       
 #    - name: Create release
 #      uses: actions/create-release@v1
