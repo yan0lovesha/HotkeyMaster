@@ -12,6 +12,7 @@ on:
     branches: [ "main" ]
 
 env:
+  NEW_VERSION: NOT_SET
   # Path to the solution file relative to the root of the project.
   SOLUTION_FILE_PATH: .
 
