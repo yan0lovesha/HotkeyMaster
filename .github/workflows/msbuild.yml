@@ -22,7 +22,7 @@ env:
 
 
 
-permissions: read-all|write-all
+#permissions: read-all|write-all
   #contents: read
 
 jobs:
