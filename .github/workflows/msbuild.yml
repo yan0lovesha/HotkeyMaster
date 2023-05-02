@@ -43,6 +43,10 @@ jobs:
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
       
+  release:
+    runs-on: windows-latest
+    
+    steps:
     - name: Set version
       run: |
         echo "version=0.0.0.34" >> $GITHUB_ENV
@@ -59,7 +63,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
+        tag_name: ${{ github.run_id }}
+        release_name: Release ${{ github.run_id }}
         draft: "false"
         prerelease: "false"
