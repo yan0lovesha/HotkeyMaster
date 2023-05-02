@@ -20,8 +20,10 @@ env:
   # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
   BUILD_CONFIGURATION: Release
 
-permissions:
-  contents: read
+
+
+permissions: read-all|write-all
+  #contents: read
 
 jobs:
   build:
@@ -46,13 +48,7 @@ jobs:
     - name: Set version
       run: |
         echo "version=0.0.0.34" >> $GITHUB_ENV
-      
-  release:
-    if: ${{ github.event_name != 'pull_request' }}
-    runs-on: windows-latest
-    needs: [build]
-    
-    steps:
+
     - name: Get version
       run: |
         echo "get with env."
@@ -69,3 +65,14 @@ jobs:
         release_name: Release ${{ github.run_id }}
         draft: "false"
         prerelease: "false"
+
+    - name: Upload Release Asset
+      id: upload-release-asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+        asset_path: x64/Release/HotkeyMaster.exe
+        asset_name: HotkeyMaster.exe
+        asset_content_type: application/zip
