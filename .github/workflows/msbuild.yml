@@ -55,7 +55,7 @@ jobs:
         echo "get with env."
         echo "${{ env.version }}"
         echo "get without env."
-        echo "$version
+        echo "$version"
         echo "get output"
         echo "${{ steps.date.outputs.timestamp }}"
 
