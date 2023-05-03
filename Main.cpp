@@ -7,7 +7,7 @@
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int cmdShow)
 {
 	// Register the hotkey
-	if (!RegisterHotKey(NULL, HotkeyID_CenterPointer, MOD_ALT | MOD_CONTROL, 'Y'))
+	if (!RegisterHotKey(NULL, HotkeyID_CenterPointer, MOD_ALT | MOD_CONTROL | MOD_SHIFT, VK_F13))
 	{
 		MessageBox(NULL, L"Failed to register hotkey", L"Error", MB_OK | MB_ICONERROR);
 		return -1;
