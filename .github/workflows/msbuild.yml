@@ -50,7 +50,7 @@ jobs:
     - name: Get current date
       id: date
       #run: echo "name=timestamp::$(date +'%Y-%m-%d')_${{ github.run_id }}" >> GITHUB_OUTPUT
-      run: echo "::set-output timestamp=date::$(date +'%Y-%m-%d')"
+      run: echo "::set-output name=timestamp::$(date +'%Y-%m-%d')"
 
     - name: Get version
       run: |
