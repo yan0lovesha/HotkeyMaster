@@ -39,8 +39,7 @@ jobs:
 #      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
     - name: Get current date
-      id: date
-      #run: echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $Env:GITHUB_OUTPUT
+      run: echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $Env:GITHUB_OUTPUT
 
     - name: Get version
       run: |
