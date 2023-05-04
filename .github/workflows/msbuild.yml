@@ -45,7 +45,10 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
     - name: Set version
-      run: echo "version=0.0.0.34" >> $GITHUB_ENV
+      id: SetVersion
+      run: |
+        echo "version=0.0.0.34" >> $GITHUB_ENV
+        echo "version=0.0.0.34" >> $GITHUB_OUTPUT
       
     - name: Get current date
       id: date
@@ -60,12 +63,5 @@ jobs:
         echo "$version"
         echo "get output"
         echo "${{ steps.date.outputs.timestamp }}"
-
-    - name: Create Release
-      # You may pin to the exact commit or the version.
-      # uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e
-      uses: ncipollo/release-action@v1.12.0
-      with:
-        tag: ${{ steps.date.outputs.timestamp }}
-        # An optional set of paths representing artifacts to upload to the release. This may be a single path or a comma delimited list of paths (or globs)
-        artifacts: x64/Release/HotkeyMaster.exe,x64/Release/Setup.ps1
+        echo "get output2"
+        echo "${{ steps.SetVersion.outputs.version }}"
