@@ -140,6 +140,12 @@
   <ItemGroup>
     <ClInclude Include="Operations.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Setup.ps1">
+      <FileType>Script</FileType>
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

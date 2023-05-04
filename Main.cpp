@@ -17,7 +17,7 @@ std::wstring GetApplicationPath() {
 void AddApplicationToStartup(std::wstring applicationPath) {
 	HKEY hkey = NULL;
 	LONG createStatus = RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hkey);
-	LONG status = RegSetValueEx(hkey, L"HotKeyMaster", 0, REG_SZ, (BYTE*)applicationPath.c_str(), (applicationPath.size() + 1) * sizeof(wchar_t));
+	LONG status = RegSetValueEx(hkey, L"HotKeyMaster", 0, REG_SZ, (BYTE*)applicationPath.c_str(), (DWORD)(applicationPath.size() + 1) * sizeof(wchar_t));
 	if (createStatus != ERROR_SUCCESS || status != ERROR_SUCCESS) {
 		MessageBox(NULL, L"Error: Could not add application to startup.", L"Error", MB_OK | MB_ICONERROR);
 	}
