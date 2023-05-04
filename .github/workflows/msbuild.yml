@@ -38,30 +38,26 @@ jobs:
 #      working-directory: ${{env.GITHUB_WORKSPACE}}
 #      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
+    - name: Get current date
+      id: date
+      #run: echo "timestamp=$(date +'%Y%m%d-%H%M%S')" >> $Env:GITHUB_OUTPUT
+
+    - name: Get version
+      run: |
+        echo "get with env."
+        echo "${{ env.timestamp }}"
+
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
 
-    - name: Set version
-      id: SetVersion
-      run: |
-        echo "version=0.0.0.34" >> $GITHUB_ENV
-        echo "version=0.0.0.34" >> $GITHUB_OUTPUT
-      
-    - name: Get current date
-      id: date
-      #run: echo "name=timestamp::$(date +'%Y-%m-%d')_${{ github.run_id }}" >> GITHUB_OUTPUT
-      run: echo "::set-output name=timestamp::$(date +'%Y-%m-%d')"
-
-    - name: Get version
-      run: |
-        echo "get with env."
-        echo "${{ env.version }}"
-        echo "get without env."
-        echo "$version"
-        echo "get output"
-        echo "${{ steps.date.outputs.timestamp }}"
-        echo "get output2"
-        echo "${{ steps.SetVersion.outputs.version }}"
+    - name: Create Release
+      # You may pin to the exact commit or the version.
+      # uses: ncipollo/release-action@a2e71bdd4e7dab70ca26a852f29600c98b33153e
+      uses: ncipollo/release-action@v1.12.0
+      with:
+        tag: ${{ env.timestamp }}
+        # An optional set of paths representing artifacts to upload to the release. This may be a single path or a comma delimited list of paths (or globs)
+        artifacts: x64/Release/HotkeyMaster.exe,x64/Release/Setup.ps1
