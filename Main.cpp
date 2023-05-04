@@ -10,7 +10,7 @@ std::wstring GetApplicationPath() {
 	GetModuleFileName(NULL, buffer, MAX_PATH);
 	std::wstring path(buffer);
 
-	MessageBox(NULL, buffer, L"Error", MB_OK | MB_ICONINFORMATION);
+	// MessageBox(NULL, buffer, L"Error", MB_OK | MB_ICONINFORMATION);
 	return path;
 }
 
@@ -18,11 +18,11 @@ void AddApplicationToStartup(std::wstring applicationPath) {
 	HKEY hkey = NULL;
 	LONG createStatus = RegCreateKey(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", &hkey);
 	LONG status = RegSetValueEx(hkey, L"HotKeyMaster", 0, REG_SZ, (BYTE*)applicationPath.c_str(), (applicationPath.size() + 1) * sizeof(wchar_t));
-	if (createStatus == ERROR_SUCCESS && status == ERROR_SUCCESS) {
-		MessageBox(NULL, L"Success: Application added to startup.", L"Succeed", MB_OK | MB_ICONINFORMATION);
+	if (createStatus != ERROR_SUCCESS || status != ERROR_SUCCESS) {
+		MessageBox(NULL, L"Error: Could not add application to startup.", L"Error", MB_OK | MB_ICONERROR);
 	}
 	else {
-		MessageBox(NULL, L"Error: Could not add application to startup.", L"Error", MB_OK | MB_ICONERROR);
+		// MessageBox(NULL, L"Success: Application added to startup.", L"Succeed", MB_OK | MB_ICONINFORMATION);
 	}
 	RegCloseKey(hkey);
 }
@@ -31,11 +31,11 @@ void RemoveApplicationFromStartup() {
 	HKEY hkey = NULL;
 	LONG openStatus = RegOpenKeyEx(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, KEY_WRITE, &hkey);
 	LONG deleteStatus = RegDeleteValue(hkey, L"HotKeyMaster");
-	if (openStatus == ERROR_SUCCESS && deleteStatus == ERROR_SUCCESS) {
-		MessageBox(NULL, L"Success: Application removed from startup.", L"Succeed", MB_OK | MB_ICONINFORMATION);
+	if (openStatus != ERROR_SUCCESS || deleteStatus != ERROR_SUCCESS) {
+		MessageBox(NULL, L"Error: Could not remove application from startup.", L"Error", MB_OK | MB_ICONERROR);
 	}
 	else {
-		MessageBox(NULL, L"Error: Could not remove application from startup.", L"Error", MB_OK | MB_ICONERROR);
+		// MessageBox(NULL, L"Success: Application removed from startup.", L"Succeed", MB_OK | MB_ICONINFORMATION);
 	}
 	RegCloseKey(hkey);
 }
