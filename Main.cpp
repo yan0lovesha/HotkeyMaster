@@ -9,8 +9,6 @@ std::wstring GetApplicationPath() {
 	wchar_t buffer[MAX_PATH];
 	GetModuleFileName(NULL, buffer, MAX_PATH);
 	std::wstring path(buffer);
-
-	// MessageBox(NULL, buffer, L"Error", MB_OK | MB_ICONINFORMATION);
 	return path;
 }
 
@@ -40,13 +38,20 @@ void RemoveApplicationFromStartup() {
 	RegCloseKey(hkey);
 }
 
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int cmdShow)
+int wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
-	std::wstring path = GetApplicationPath();
-	// RemoveApplicationFromStartup();
-	AddApplicationToStartup(path);
+	if (lstrcmpiW(lpCmdLine, L"addStartUp") == 0) {
+		std::wstring path = GetApplicationPath();
+		AddApplicationToStartup(path);
+		MessageBox(NULL, L"Added to startup.", L"Info", MB_OK | MB_ICONINFORMATION);
+		return 0;
+	}
 
-	return 0;
+	if (lstrcmpiW(lpCmdLine, L"removeStartup") == 0) {
+		RemoveApplicationFromStartup();
+		MessageBox(NULL, L"Removed from startup.", L"Info", MB_OK | MB_ICONINFORMATION);
+		return 0;
+	}
 
 	// Register the hotkey
 	if (!RegisterHotKey(NULL, HotkeyID_CenterPointer, MOD_ALT | MOD_CONTROL | MOD_SHIFT, VK_F13))
