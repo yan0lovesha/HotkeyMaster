@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <cstdlib>
+#include <Lmcons.h>
 #include "Operations.h"
 
 #define HotkeyID_CenterPointer 1
@@ -31,24 +32,30 @@ void RunnCommandInProcess(std::wstring& cmd) {
 	}
 }
 
+void EndScheduledTask() {
+	std::wstring command = L"schtasks /end /tn \"HotKeyMaster\"";
+	RunnCommandInProcess(command);
+}
+
 void DeleteScheduledTask() {
-	std::wstring command = L"schtasks /delete /tn \"HotKeyMaster\"";
+	EndScheduledTask();
+	std::wstring command = L"schtasks /delete /tn \"HotKeyMaster\" /f";
 	RunnCommandInProcess(command);
 }
 
 void AddScheduledTask(std::wstring applicationPath) {
 	DeleteScheduledTask();
-	std::wstring command = std::format(L"schtasks /create /tn \"HotKeyMaster\" /tr \"{}\" /sc onstart /ru SYSTEM", applicationPath);
+
+	wchar_t username[UNLEN + 1];
+	DWORD username_len = UNLEN + 1;
+	GetUserNameW(username, &username_len);
+
+	std::wstring command = std::format(L"schtasks /create /tn \"HotKeyMaster\" /tr \"{}\" /sc onlogon /ru \"{}\" /rl HIGHEST", applicationPath, username);
 	RunnCommandInProcess(command);
 }
 
 void RunScheduledTask() {
 	std::wstring command = L"schtasks /run /tn \"HotKeyMaster\"";
-	RunnCommandInProcess(command);
-}
-
-void EndScheduledTask() {
-	std::wstring command = L"schtasks /end /tn \"HotKeyMaster\"";
 	RunnCommandInProcess(command);
 }
 
@@ -90,7 +97,6 @@ int wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LP
 	}
 
 	if (lstrcmpiW(lpCmdLine, L"removeStartup") == 0) {
-		EndScheduledTask();
 		DeleteScheduledTask();
 		MessageBox(NULL, L"Removed from startup.", L"Info", MB_OK | MB_ICONINFORMATION);
 		return 0;
