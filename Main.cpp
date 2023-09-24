@@ -1,6 +1,8 @@
+#include <format>
 #include <windows.h>
 #include <iostream>
 #include <string>
+#include <cstdlib>
 #include "Operations.h"
 
 #define HotkeyID_CenterPointer 1
@@ -12,6 +14,44 @@ std::wstring GetApplicationPath() {
 
 	// MessageBox(NULL, buffer, L"Error", MB_OK | MB_ICONINFORMATION);
 	return path;
+}
+
+void RunnCommandInProcess(std::wstring& cmd) {
+	STARTUPINFOW si;
+	PROCESS_INFORMATION pi;
+
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+
+	//si.wShowWindow = SW_HIDE;
+
+	if (CreateProcessW(NULL, &cmd[0], NULL, NULL, FALSE, CREATE_NO_WINDOW, NULL, NULL, &si, &pi)) {
+		WaitForSingleObject(pi.hProcess, INFINITE);
+		CloseHandle(pi.hProcess);
+		CloseHandle(pi.hThread);
+	}
+}
+
+void DeleteScheduledTask() {
+	std::wstring command = L"schtasks /delete /tn \"HotKeyMaster\"";
+	RunnCommandInProcess(command);
+}
+
+void AddScheduledTask(std::wstring applicationPath) {
+	DeleteScheduledTask();
+	std::wstring command = std::format(L"schtasks /create /tn \"HotKeyMaster\" /tr \"{}\" /sc onstart /ru SYSTEM", applicationPath);
+	RunnCommandInProcess(command);
+}
+
+void RunScheduledTask() {
+	std::wstring command = L"schtasks /run /tn \"HotKeyMaster\"";
+	RunnCommandInProcess(command);
+}
+
+void EndScheduledTask() {
+	std::wstring command = L"schtasks /end /tn \"HotKeyMaster\"";
+	RunnCommandInProcess(command);
 }
 
 void AddApplicationToStartup(std::wstring applicationPath) {
@@ -40,13 +80,23 @@ void RemoveApplicationFromStartup() {
 	RegCloseKey(hkey);
 }
 
-int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int cmdShow)
+int wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd)
 {
-	std::wstring path = GetApplicationPath();
-	// RemoveApplicationFromStartup();
-	AddApplicationToStartup(path);
+	if (lstrcmpiW(lpCmdLine, L"addStartUp") == 0) {
+		std::wstring path = GetApplicationPath();
+		//AddApplicationToStartup(path);
+		AddScheduledTask(path);
+		MessageBox(NULL, L"Added to startup.", L"Info", MB_OK | MB_ICONINFORMATION);
+		RunScheduledTask();
+		return 0;
+	}
 
-	return 0;
+	if (lstrcmpiW(lpCmdLine, L"removeStartup") == 0) {
+		EndScheduledTask();
+		DeleteScheduledTask();
+		MessageBox(NULL, L"Removed from startup.", L"Info", MB_OK | MB_ICONINFORMATION);
+		return 0;
+	}
 
 	// Register the hotkey
 	if (!RegisterHotKey(NULL, HotkeyID_CenterPointer, MOD_ALT | MOD_CONTROL | MOD_SHIFT, VK_F13))
