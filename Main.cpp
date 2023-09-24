@@ -11,8 +11,6 @@ std::wstring GetApplicationPath() {
 	wchar_t buffer[MAX_PATH];
 	GetModuleFileName(NULL, buffer, MAX_PATH);
 	std::wstring path(buffer);
-
-	// MessageBox(NULL, buffer, L"Error", MB_OK | MB_ICONINFORMATION);
 	return path;
 }
 
